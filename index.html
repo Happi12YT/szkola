@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Symulacja dzwonka szkolnego</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    #clock {
+      font-size: 48px;
+      margin-bottom: 40px;
+    }
+
+    #bell {
+      font-size: 64px;
+      transition: transform 0.1s;
+      display: inline-block;
+    }
+
+    .ringing {
+      animation: shake 0.1s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-20deg); }
+      50% { transform: rotate(20deg); }
+      75% { transform: rotate(-10deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+  <div id="clock">00:00:00</div>
+  <div id="bell">🔔</div>
+  <audio id="bellSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+  <script>
+    const clock = document.getElementById("clock");
+    const bell = document.getElementById("bell");
+    const sound = document.getElementById("bellSound");
+    let ringing = false;
+
+    function updateTime() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      clock.textContent = `${h}:${m}:${s}`;
+
+      // Jeśli godzina to 17:50:00, włącz dzwonek
+      if (h === "18" && m === "02" && s === "00" && !ringing) {
+        ringing = true;
+        bell.classList.add("ringing");
+        sound.play();
+
+        setTimeout(() => {
+          bell.classList.remove("ringing");
+          ringing = false;
+        }, 10000); // 10 sekund
+      }
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+</body>
+</html>
